@@ -1,11 +1,11 @@
 <!-- Badges -->
-[![Merge](https://github.com/bcgov-nr/action-pr-description-add/actions/workflows/merge.yml/badge.svg)](https://github.com/bcgov-nr/action-pr-description-add/actions/workflows/merge.yml)
-[![CodeQL](https://github.com/bcgov-nr/action-pr-description-add/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/bcgov-nr/action-pr-description-add/actions/workflows/github-code-scanning/codeql)
-[![Contributors](https://img.shields.io/github/contributors/bcgov-nr/action-pr-description-add)](/../../graphs/contributors)
-[![Forks](https://img.shields.io/github/forks/bcgov-nr/action-pr-description-add)](/../../network/members)
-[![Stargazers](https://img.shields.io/github/stars/bcgov-nr/action-pr-description-add)](/../../stargazers)
-[![Issues](https://img.shields.io/github/issues/bcgov-nr/action-pr-description-add)](/../../issues)
-[![MIT License](https://img.shields.io/github/license/bcgov-nr/action-pr-description-add.svg)](/LICENSE)
+[![Merge](https://github.com/bcgov/action-pr-description-add/actions/workflows/merge.yml/badge.svg)](https://github.com/bcgov/action-pr-description-add/actions/workflows/merge.yml)
+[![CodeQL](https://github.com/bcgov/action-pr-description-add/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/bcgov/action-pr-description-add/actions/workflows/github-code-scanning/codeql)
+[![Contributors](https://img.shields.io/github/contributors/bcgov/action-pr-description-add)](/../../graphs/contributors)
+[![Forks](https://img.shields.io/github/forks/bcgov/action-pr-description-add)](/../../network/members)
+[![Stargazers](https://img.shields.io/github/stars/bcgov/action-pr-description-add)](/../../stargazers)
+[![Issues](https://img.shields.io/github/issues/bcgov/action-pr-description-add)](/../../issues)
+[![MIT License](https://img.shields.io/github/license/bcgov/action-pr-description-add.svg)](/LICENSE)
 [![Lifecycle](https://img.shields.io/badge/Lifecycle-Experimental-339999)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
 
 # Add to Pull Request Descriptions
@@ -53,7 +53,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: bcgov-nr/action-pr-description-add@main
+      - uses: bcgov/action-pr-description-add@main
         with:
           add_markdown: |
             ---
@@ -79,7 +79,7 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-      - uses: bcgov-nr/action-pr-description-add@main
+      - uses: bcgov/action-pr-description-add@main
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
           limit_to_pr_opened: "true"

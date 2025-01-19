@@ -51,7 +51,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: bcgov/action-pr-description-add@main
         with:
@@ -77,7 +77,7 @@ jobs:
     name: PR Greeting
     permissions:
       pull-requests: write
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: bcgov/action-pr-description-add@main
         with:

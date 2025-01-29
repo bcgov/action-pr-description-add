@@ -35,14 +35,14 @@ jobs:
           token: ${{ github.token }}
 
       - name: Git Setup
-        if: ${{ steps.semver.outputs.next }}
+        if: steps.semver.outputs.next
         run: |
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git config --global user.name "${GITHUB_ACTOR}"
           git checkout -b ${{ env.branch }}
 
       - name: Rebuild ./dist
-        if: ${{ steps.semver.outputs.next }}
+        if: steps.semver.outputs.next
         run: |
           npm run dist
           git add ./dist --force
@@ -50,7 +50,7 @@ jobs:
           git push -u origin HEAD:${{ env.branch }}
 
       - name: Tag and Release (Major)
-        if: ${{ steps.semver.outputs.next }}
+        if: steps.semver.outputs.next
         env:
           GH_TOKEN: ${{ github.token }}
           tag: ${{ steps.semver.outputs.nextMajor }}
@@ -65,7 +65,7 @@ jobs:
           fi
 
       - name: Tag and Release (Semver)
-        if: ${{ steps.semver.outputs.next }}
+        if: steps.semver.outputs.next
         env:
           GH_TOKEN: ${{ github.token }}
           tag: ${{ steps.semver.outputs.next }}

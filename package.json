@@ -41,7 +41,8 @@
     "typescript": "^5.4.5"
   },
   "overrides": {
-    "braces@3.0.2": "3.0.3",
+    "@octokit/plugin-paginate-rest@<11.4.1": "11.4.1",
+    "@octokit/request@<9.2.1": "9.2.1",
     "undici@<5.28.5": "5.28.5"
   }
 }

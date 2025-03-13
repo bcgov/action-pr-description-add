@@ -32,7 +32,6 @@ jobs:
       # Test with different inputs
       - uses: ./
         with:
-          limit_to_pr_opened: true
           add_markdown: |
             ---
 

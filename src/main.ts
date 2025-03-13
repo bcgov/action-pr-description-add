@@ -4,22 +4,13 @@ import {context, getOctokit} from '@actions/github'
 // Action input
 const markdown = getInput('add_markdown')
 const token = getInput('github_token')
-const limit_to_pr_opened = getInput('limit_to_pr_opened')
 
-if (!markdown || !token || !limit_to_pr_opened) {
+if (!markdown || !token) {
   error('Error: please verify input!')
 }
 
 // Main function
 async function action(): Promise<void> {
-  // If limit_to_pr_opened is true, verify status (opened, reopened)
-  const trigger = context.payload.action || ''
-  const statuses = ['opened', 'reopened']
-  if (limit_to_pr_opened === 'true' && !statuses.includes(trigger)) {
-    info('PR not opened or reopened with limit_to_pr_opened=true. Exiting.')
-    return
-  }
-
   // Ensure pull request exists
   if (!context.payload.pull_request) {
     error('Error: No pull request found in context. Exiting.')

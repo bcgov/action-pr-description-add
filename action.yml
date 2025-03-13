@@ -12,9 +12,6 @@ inputs:
   github_token:
     description: "GitHub token or a Personal Access Token (PAT)"
     default: ${{ github.token }}
-  limit_to_pr_opened:
-    description: "Only run when a PR is opened or reopened, not pushed"
-    default: "false"
 
 runs:
   using: "node20"

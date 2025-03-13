@@ -22,8 +22,6 @@ This action adds to Pull Request descriptions using markdown.  It checks if the 
 
 `github_token`: ${{ secrets.GITHUB_TOKEN }} or a Personal Access Token (PAT).  Default is to inherit a token from the calling workflow.
 
-`limit_to_pr_opened`: Only take action when PR status is opened or reopened.  Default = false.
-
 ## Permissions
 
 #### Explicit rights
@@ -82,7 +80,6 @@ jobs:
       - uses: bcgov/action-pr-description-add@main
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-          limit_to_pr_opened: "true"
           add_markdown: |
             ---
 
@@ -103,6 +100,10 @@ Please submit issues (bugs, feature requests) and take part in discussions at th
 BC Government QuickStart for OpenShift - [Issues](https://github.com/bcgov/quickstart-openshift/issues)
 
 BC Government QuickStart for OpenShift - [Discussions](https://github.com/bcgov/quickstart-openshift/discussions)
+
+## Deprecations
+
+The parameter `limit_to_pr_opened` was deprecated due to non-use.  Using this parameter will result in a warning only.
 
 ## Contributing
 

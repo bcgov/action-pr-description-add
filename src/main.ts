@@ -27,7 +27,7 @@ async function action(): Promise<void> {
   }
 
   // Get PR body from GitHub context
-  const body = context.payload.pull_request.body || ''
+  const body = context.payload.pull_request?.body || ''
 
   // If message is already present, then return/exit
   if (body.includes(markdown)) {
@@ -35,9 +35,11 @@ async function action(): Promise<void> {
     return
   }
 
-  // Append markdown after cleaning up any existing duplicates
+  // Append markdown after removing existing duplicates
   const updatedBody = `${body
-    .replace(new RegExp(`\n*${markdown}\n*`, 'g'), '')
+    .split('\n')
+    .filter(line => line.trim() !== markdown.trim())
+    .join('\n')
     .trim()}\n\n${markdown}`
 
   // Update PR body

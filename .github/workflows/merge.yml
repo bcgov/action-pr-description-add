@@ -26,11 +26,11 @@ jobs:
       contents: write
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Get Semver
         id: semver
         continue-on-error: true
-        uses: ietf-tools/semver-action@v1
+        uses: ietf-tools/semver-action@778d1d5b7af80aa43f50104116b8363e7fc0d1ef # v1
         with:
           token: ${{ github.token }}
 

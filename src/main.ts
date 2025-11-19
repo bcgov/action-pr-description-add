@@ -65,12 +65,28 @@ async function action(): Promise<void> {
 
   // Update PR body
   info('Description is being updated.')
-  await octokit.rest.pulls.update({
-    owner: context.repo.owner,
-    repo: context.repo.repo,
-    pull_number: prNumber,
-    body: updatedBody
-  })
+  try {
+    await octokit.rest.pulls.update({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      pull_number: prNumber,
+      body: updatedBody
+    })
+    info('Successfully updated PR description.')
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : String(err)
+    const statusCode = (err as {status?: number})?.status
+    
+    // Handle specific error cases
+    if (statusCode === 404) {
+      error('PR not found. It may have been deleted.')
+    } else if (statusCode === 403) {
+      error('Permission denied. Check token permissions.')
+    } else {
+      error(`Failed to update PR: ${errorMessage}`)
+    }
+    throw err
+  }
 }
 
 // Run main function

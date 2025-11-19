@@ -9,6 +9,20 @@ if (!markdown || !token) {
   error('Error: please verify input!')
 }
 
+/**
+ * Normalizes text for comparison by trimming and normalizing whitespace
+ * This helps detect duplicates even with minor whitespace differences
+ */
+function normalizeText(text: string): string {
+  return text
+    .replace(/\r\n/g, '\n') // Normalize line endings
+    .replace(/\r/g, '\n')
+    .split('\n')
+    .map(line => line.trimEnd()) // Trim trailing whitespace from each line
+    .join('\n')
+    .trim() // Trim leading/trailing whitespace from entire block
+}
+
 // Main function
 async function action(): Promise<void> {
   // Ensure pull request exists
@@ -17,29 +31,44 @@ async function action(): Promise<void> {
     return
   }
 
-  // Get PR body from GitHub context
-  const body = context.payload.pull_request?.body || ''
+  const prNumber = context.payload.pull_request.number
+  const octokit = getOctokit(token)
 
-  // If message is already present, then return/exit
-  if (body.includes(markdown)) {
+  // Fetch latest PR body from API to avoid race conditions
+  let currentBody = ''
+  try {
+    const {data: pr} = await octokit.rest.pulls.get({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      pull_number: prNumber
+    })
+    currentBody = pr.body || ''
+  } catch (err) {
+    // Fallback to context if API call fails
+    error(`Failed to fetch PR from API: ${err instanceof Error ? err.message : err}`)
+    currentBody = context.payload.pull_request?.body || ''
+    info('Fell back to context PR body.')
+  }
+
+  // Check if markdown is already present using normalized comparison
+  const normalizedBody = normalizeText(currentBody)
+  const normalizedMarkdown = normalizeText(markdown)
+  if (normalizedBody.includes(normalizedMarkdown)) {
     info('Markdown message is already present. Exiting.')
     return
   }
 
-  // Append markdown after removing existing duplicates
-  const updatedBody = `${body
-    .split('\n')
-    .filter(line => line.trim() !== markdown.trim())
-    .join('\n')
-    .trim()}\n\n${markdown}`
+  // Append markdown
+  const updatedBody = currentBody
+    ? `${currentBody.trim()}\n\n${markdown}`
+    : markdown
 
   // Update PR body
-  const octokit = getOctokit(token)
   info('Description is being updated.')
   await octokit.rest.pulls.update({
     owner: context.repo.owner,
     repo: context.repo.repo,
-    pull_number: context.payload.pull_request.number,
+    pull_number: prNumber,
     body: updatedBody
   })
 }

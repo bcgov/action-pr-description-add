@@ -27,6 +27,7 @@ jobs:
         uses: ietf-tools/semver-action@c90370b2958652d71c06a3484129a4d423a6d8a8 # v1
         with:
           token: ${{ github.token }}
+          skipInvalidTags: true
 
       - name: Git Setup
         if: steps.semver.outputs.next

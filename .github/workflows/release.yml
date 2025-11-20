@@ -1,4 +1,4 @@
-name: Merge
+name: Release
 
 on:
   workflow_dispatch:

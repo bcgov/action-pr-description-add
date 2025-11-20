@@ -57,17 +57,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           tag: ${{ steps.semver.outputs.nextMajor }}
         run: |
-          git fetch --tags
           git tag -f ${{ env.tag }}
           git push -f origin tag ${{ env.tag }}
 
           if [ $(gh release view ${{ env.tag }} --json name -q .name) ]; then
             gh release edit ${{ env.tag }} --title ${{ env.tag }} --tag ${{ env.tag }}
           else
-            # Get previous tag for comparison (exclude current tag)
             PREV_TAG=$(git tag --sort=-version:refname | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | grep -v "^${{ env.tag }}$" | head -1)
             if [ -n "$PREV_TAG" ]; then
-              # Generate notes comparing previous tag to current tag
               gh release create ${{ env.tag }} --title ${{ env.tag }} --notes "$(gh api repos/${{ github.repository }}/releases/generate-notes -f tag_name=${{ env.tag }} -f previous_tag_name=$PREV_TAG -q .body)"
             else
               gh release create ${{ env.tag }} --title ${{ env.tag }} --generate-notes
@@ -80,7 +77,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           tag: ${{ steps.semver.outputs.next }}
         run: |
-          git fetch --tags
           git tag ${{ env.tag }}
           git push origin tag ${{ env.tag }}
 
@@ -88,10 +84,8 @@ jobs:
             gh release delete ${{ env.tag }} --yes
           fi
 
-          # Get previous tag for comparison (exclude current tag)
           PREV_TAG=$(git tag --sort=-version:refname | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | grep -v "^${{ env.tag }}$" | head -1)
           if [ -n "$PREV_TAG" ]; then
-            # Generate notes comparing previous tag to current tag
             gh release create ${{ env.tag }} --title ${{ env.tag }} --notes "$(gh api repos/${{ github.repository }}/releases/generate-notes -f tag_name=${{ env.tag }} -f previous_tag_name=$PREV_TAG -q .body)"
           else
             gh release create ${{ env.tag }} --title ${{ env.tag }} --generate-notes

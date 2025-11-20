@@ -21,13 +21,44 @@ jobs:
       - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6
         with:
           fetch-depth: 0 # Fetch all history for tags
+      - name: Check for significant changes
+        id: changes
+        run: |
+          # Find the last valid semver tag (exclude major-only tags like v2)
+          LAST_TAG=$(git tag --sort=-version:refname | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | grep -vE '^v?[0-9]+$' | head -1)
+
+          if [ -z "$LAST_TAG" ]; then
+            echo "No previous valid semver tag found, proceeding with release"
+            echo "has_significant_changes=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Comparing against last tag: $LAST_TAG"
+
+          # Get list of changed files, excluding non-significant paths
+          CHANGED_FILES=$(git diff --name-only $LAST_TAG..HEAD | grep -vE '^\.github/workflows/' | grep -vE '^README\.md$' | grep -vE '\.md$' | grep -vE '^\.gitignore$' | grep -vE '^\.gitattributes$' | grep -vE '^renovate\.json$' | grep -vE '^CODEOWNERS$' || true)
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No significant changes detected (only workflow/README/docs changes)"
+            echo "has_significant_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "Significant changes detected in:"
+            echo "$CHANGED_FILES"
+            echo "has_significant_changes=true" >> $GITHUB_OUTPUT
+          fi
       - name: Get Semver
         id: semver
+        if: steps.changes.outputs.has_significant_changes == 'true'
         continue-on-error: true
         uses: ietf-tools/semver-action@c90370b2958652d71c06a3484129a4d423a6d8a8 # v1
         with:
           token: ${{ github.token }}
           skipInvalidTags: true
+      - name: Skip release (no significant changes)
+        if: steps.changes.outputs.has_significant_changes == 'false'
+        run: |
+          echo "Skipping release: Only workflow, README, or documentation changes detected."
+          echo "No code changes found that would warrant a new release."
 
       - name: Git Setup
         if: steps.semver.outputs.next

@@ -45,11 +45,15 @@ jobs:
           git push -u origin HEAD:${{ env.branch }}
 
       - name: Tag and Release (Major)
-        if: steps.semver.outputs.next
+        if: steps.semver.outputs.next || steps.semver.outputs.nextMajor
         env:
           GH_TOKEN: ${{ github.token }}
           tag: ${{ steps.semver.outputs.nextMajor }}
         run: |
+          if [ -z "${{ env.tag }}" ]; then
+            echo "No major tag available, skipping major release"
+            exit 0
+          fi
           git tag -f ${{ env.tag }}
           git push -f origin tag ${{ env.tag }}
 

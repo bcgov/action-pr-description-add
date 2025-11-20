@@ -4,11 +4,11 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src/**'
-      - 'package-lock.json'
-      - 'package.json'
-      - 'tsconfig.json'
-      - 'action.yml'
+      - "src/**"
+      - "package-lock.json"
+      - "package.json"
+      - "tsconfig.json"
+      - "action.yml"
   workflow_dispatch:
 
 concurrency:
@@ -26,7 +26,9 @@ jobs:
       contents: write
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          fetch-depth: 0 # Fetch all history for tags
       - name: Get Semver
         id: semver
         continue-on-error: true
@@ -61,7 +63,12 @@ jobs:
           if [ $(gh release view ${{ env.tag }} --json name -q .name) ]; then
             gh release edit ${{ env.tag }} --title ${{ env.tag }} --tag ${{ env.tag }}
           else
-            gh release create ${{ env.tag }} --title ${{ env.tag }} --generate-notes
+            PREV_TAG=$(git tag --sort=-version:refname | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | grep -v "^${{ env.tag }}$" | head -1)
+            if [ -n "$PREV_TAG" ]; then
+              gh release create ${{ env.tag }} --title ${{ env.tag }} --notes "$(gh api repos/${{ github.repository }}/releases/generate-notes -f tag_name=${{ env.tag }} -f previous_tag_name=$PREV_TAG -q .body)"
+            else
+              gh release create ${{ env.tag }} --title ${{ env.tag }} --generate-notes
+            fi
           fi
 
       - name: Tag and Release (Semver)
@@ -76,7 +83,13 @@ jobs:
           if [ $(gh release view ${{ env.tag }} --json name -q .name) ]; then
             gh release delete ${{ env.tag }} --yes
           fi
-          gh release create ${{ env.tag }} --title ${{ env.tag }} --generate-notes
+
+          PREV_TAG=$(git tag --sort=-version:refname | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | grep -v "^${{ env.tag }}$" | head -1)
+          if [ -n "$PREV_TAG" ]; then
+            gh release create ${{ env.tag }} --title ${{ env.tag }} --notes "$(gh api repos/${{ github.repository }}/releases/generate-notes -f tag_name=${{ env.tag }} -f previous_tag_name=$PREV_TAG -q .body)"
+          else
+            gh release create ${{ env.tag }} --title ${{ env.tag }} --generate-notes
+          fi
 
       - name: Cleanup
         if: always()

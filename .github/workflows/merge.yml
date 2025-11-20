@@ -27,6 +27,7 @@ jobs:
         uses: ietf-tools/semver-action@c90370b2958652d71c06a3484129a4d423a6d8a8 # v1
         with:
           token: ${{ github.token }}
+          skipInvalidTags: true
 
       - name: Git Setup
         if: steps.semver.outputs.next
@@ -55,7 +56,8 @@ jobs:
           if [ $(gh release view ${{ env.tag }} --json name -q .name) ]; then
             gh release edit ${{ env.tag }} --title ${{ env.tag }} --tag ${{ env.tag }}
           else
-            PREV_TAG=$(git tag --sort=-version:refname | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | grep -v "^${{ env.tag }}$" | head -1)
+            # Get previous valid semver tag (exclude current tag and major-only tags like v2)
+            PREV_TAG=$(git tag --sort=-version:refname | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | grep -v "^${{ env.tag }}$" | grep -vE '^v?[0-9]+$' | head -1)
             if [ -n "$PREV_TAG" ]; then
               gh release create ${{ env.tag }} --title ${{ env.tag }} --notes "$(gh api repos/${{ github.repository }}/releases/generate-notes -f tag_name=${{ env.tag }} -f previous_tag_name=$PREV_TAG -q .body)"
             else
@@ -76,7 +78,8 @@ jobs:
             gh release delete ${{ env.tag }} --yes
           fi
 
-          PREV_TAG=$(git tag --sort=-version:refname | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | grep -v "^${{ env.tag }}$" | head -1)
+          # Get previous valid semver tag (exclude current tag and major-only tags like v2)
+          PREV_TAG=$(git tag --sort=-version:refname | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | grep -v "^${{ env.tag }}$" | grep -vE '^v?[0-9]+$' | head -1)
           if [ -n "$PREV_TAG" ]; then
             gh release create ${{ env.tag }} --title ${{ env.tag }} --notes "$(gh api repos/${{ github.repository }}/releases/generate-notes -f tag_name=${{ env.tag }} -f previous_tag_name=$PREV_TAG -q .body)"
           else

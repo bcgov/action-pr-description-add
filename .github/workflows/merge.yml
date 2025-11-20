@@ -1,14 +1,6 @@
 name: Merge
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "src/**"
-      - "package-lock.json"
-      - "package.json"
-      - "tsconfig.json"
-      - "action.yml"
   workflow_dispatch:
 
 concurrency:

@@ -26,7 +26,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@actions/core": "^2.0.0",
-    "@actions/github": "^6.0.0",
+    "@actions/github": "^7.0.0",
     "braces": "^3.0.3"
   },
   "devDependencies": {

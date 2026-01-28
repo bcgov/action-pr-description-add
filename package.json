@@ -2,6 +2,7 @@
   "name": "action-pr-description-add",
   "version": "0.0.3",
   "private": true,
+  "type": "module",
   "description": "TypeScript template action",
   "main": "src/main.ts",
   "scripts": {
@@ -26,7 +27,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@actions/core": "^2.0.0",
-    "@actions/github": "^7.0.0",
+    "@actions/github": "^9.0.0",
     "braces": "^3.0.3"
   },
   "devDependencies": {

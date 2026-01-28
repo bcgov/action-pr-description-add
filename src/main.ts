@@ -45,7 +45,9 @@ async function action(): Promise<void> {
     currentBody = pr.body || ''
   } catch (err) {
     // Fallback to context if API call fails
-    error(`Failed to fetch PR from API: ${err instanceof Error ? err.message : err}`)
+    error(
+      `Failed to fetch PR from API: ${err instanceof Error ? err.message : err}`
+    )
     currentBody = context.payload.pull_request?.body || ''
     info('Fell back to context PR body.')
   }
@@ -76,7 +78,7 @@ async function action(): Promise<void> {
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err)
     const statusCode = (err as {status?: number})?.status
-    
+
     // Handle specific error cases
     if (statusCode === 404) {
       error('PR not found. It may have been deleted.')

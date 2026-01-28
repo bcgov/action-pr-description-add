@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "description": "TypeScript template action",
-  "main": "src/main.ts",
+  "main": "lib/main.js",
   "scripts": {
     "all": "npm run build && npm run format && npm run lint && npm run package",
     "build": "tsc",

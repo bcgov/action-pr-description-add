@@ -40,10 +40,5 @@
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.2",
     "typescript": "^5.4.5"
-  },
-  "overrides": {
-    "@octokit/plugin-paginate-rest@<11.4.1": "11.4.1",
-    "@octokit/request@<9.2.1": "9.2.1",
-    "undici@<5.29.0": "5.29.0"
   }
 }

@@ -26,7 +26,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@actions/core": "^2.0.0",
-    "@actions/github": "^9.0.0",
+    "@actions/github": "^7.0.0",
     "braces": "^3.0.3"
   },
   "devDependencies": {
@@ -43,6 +43,6 @@
   "overrides": {
     "@octokit/plugin-paginate-rest@<11.4.1": "11.4.1",
     "@octokit/request@<9.2.1": "9.2.1",
-    "undici@<5.29.0": "5.29.0"
+    "undici@<6.23.0": "6.23.0"
   }
 }

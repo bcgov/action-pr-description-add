@@ -1,5 +1,5 @@
 <!-- Badges -->
-[![Merge](https://github.com/bcgov/action-pr-description-add/actions/workflows/merge.yml/badge.svg)](https://github.com/bcgov/action-pr-description-add/actions/workflows/merge.yml)
+[![Release](https://github.com/bcgov/action-pr-description-add/actions/workflows/release.yml/badge.svg)](https://github.com/bcgov/action-pr-description-add/actions/workflows/release.yml)
 [![CodeQL](https://github.com/bcgov/action-pr-description-add/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/bcgov/action-pr-description-add/actions/workflows/github-code-scanning/codeql)
 [![Contributors](https://img.shields.io/github/contributors/bcgov/action-pr-description-add)](/../../graphs/contributors)
 [![Forks](https://img.shields.io/github/forks/bcgov/action-pr-description-add)](/../../network/members)

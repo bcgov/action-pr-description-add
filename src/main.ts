@@ -1,5 +1,5 @@
-import {error, getInput, info} from '@actions/core'
-import {context, getOctokit} from '@actions/github'
+import { error, getInput, info } from '@actions/core'
+import { context, getOctokit } from '@actions/github'
 
 // Action input
 const markdown = getInput('add_markdown')
@@ -23,6 +23,20 @@ function normalizeText(text: string): string {
     .trim() // Trim leading/trailing whitespace from entire block
 }
 
+/**
+ * Removes checkbox markdown syntax from text for comparison purposes.
+ * This treats checkbox state changes (- [ ] to - [x]) as expected body mutations
+ * that shouldn't trigger duplicate detection.
+ */
+function removeCheckboxes(text: string): string {
+  return text
+    .replace(/^-? \[ \] .*$/gm, '') // Unchecked: "- [ ] text" or "[ ] text"
+    .replace(/^-? \[x\] .*/gim, '') // Checked: "- [x] text" or "[x] text" (with optional hyphen)
+    .replace(/^\s*$/gm, '') // Remove empty lines left by removed checkboxes
+    .replace(/\n{3,}/g, '\n\n') // Normalize multiple blank lines
+    .trim()
+}
+
 // Main function
 async function action(): Promise<void> {
   // Ensure pull request exists
@@ -37,7 +51,7 @@ async function action(): Promise<void> {
   // Fetch latest PR body from API to avoid race conditions
   let currentBody = ''
   try {
-    const {data: pr} = await octokit.rest.pulls.get({
+    const { data: pr } = await octokit.rest.pulls.get({
       owner: context.repo.owner,
       repo: context.repo.repo,
       pull_number: prNumber
@@ -53,10 +67,14 @@ async function action(): Promise<void> {
   }
 
   // Check if markdown is already present using normalized comparison
+  // Exclude checkbox state from comparison since clicking checkboxes is an expected body change
   const normalizedBody = normalizeText(currentBody)
   const normalizedMarkdown = normalizeText(markdown)
-  if (normalizedBody.includes(normalizedMarkdown)) {
-    info('Markdown message is already present. Exiting.')
+  const bodyForComparison = removeCheckboxes(normalizedBody)
+  const markdownForComparison = removeCheckboxes(normalizedMarkdown)
+
+  if (bodyForComparison.includes(markdownForComparison)) {
+    info('Markdown message is already present (excluding checkbox state). Exiting.')
     return
   }
 
@@ -77,7 +95,7 @@ async function action(): Promise<void> {
     info('Successfully updated PR description.')
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err)
-    const statusCode = (err as {status?: number})?.status
+    const statusCode = (err as { status?: number })?.status
 
     // Handle specific error cases
     if (statusCode === 404) {
@@ -92,7 +110,7 @@ async function action(): Promise<void> {
 }
 
 // Run main function
-;(async () => {
+; (async () => {
   try {
     await action()
   } catch (err) {

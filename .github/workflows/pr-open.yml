@@ -39,3 +39,20 @@ jobs:
             ## Excitement!
             [Links!](https://google.ca)
             `Code!`
+
+      # Test checkbox handling - should not duplicate when checkbox state changes
+      # This tests that checkboxes with same content don't cause false positive duplicates
+      - uses: ./
+        with:
+          add_markdown: |
+            ## Checkbox Test
+            - [ ] Unchecked item
+            - [x] Checked item
+
+      # Verify checkbox content is not duplicated when run again
+      - uses: ./
+        with:
+          add_markdown: |
+            ## Checkbox Test
+            - [ ] Unchecked item
+            - [x] Checked item

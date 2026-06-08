@@ -1,5 +1,5 @@
-import { error, getInput, info } from '@actions/core'
-import { context, getOctokit } from '@actions/github'
+import {error, getInput, info} from '@actions/core'
+import {context, getOctokit} from '@actions/github'
 
 // Action input
 const markdown = getInput('add_markdown')
@@ -51,7 +51,7 @@ async function action(): Promise<void> {
   // Fetch latest PR body from API to avoid race conditions
   let currentBody = ''
   try {
-    const { data: pr } = await octokit.rest.pulls.get({
+    const {data: pr} = await octokit.rest.pulls.get({
       owner: context.repo.owner,
       repo: context.repo.repo,
       pull_number: prNumber
@@ -74,7 +74,9 @@ async function action(): Promise<void> {
   const markdownForComparison = removeCheckboxes(normalizedMarkdown)
 
   if (bodyForComparison.includes(markdownForComparison)) {
-    info('Markdown message is already present (excluding checkbox state). Exiting.')
+    info(
+      'Markdown message is already present (excluding checkbox state). Exiting.'
+    )
     return
   }
 
@@ -95,7 +97,7 @@ async function action(): Promise<void> {
     info('Successfully updated PR description.')
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err)
-    const statusCode = (err as { status?: number })?.status
+    const statusCode = (err as {status?: number})?.status
 
     // Handle specific error cases
     if (statusCode === 404) {
@@ -110,7 +112,7 @@ async function action(): Promise<void> {
 }
 
 // Run main function
-; (async () => {
+;(async () => {
   try {
     await action()
   } catch (err) {

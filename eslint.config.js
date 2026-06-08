@@ -1,13 +1,23 @@
-{
-    "plugins": ["@typescript-eslint"],
-    "extends": ["plugin:github/recommended"],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-      "ecmaVersion": 9,
-      "sourceType": "module",
-      "project": "./tsconfig.json"
+import github from 'eslint-plugin-github'
+import { fixupPluginRules } from '@eslint/compat'
+
+const recommendedConfig = github.getFlatConfigs().recommended
+recommendedConfig.plugins['eslint-comments'] = fixupPluginRules(recommendedConfig.plugins['eslint-comments'])
+
+export default [
+  {
+    ignores: ['dist/**', 'lib/**', 'node_modules/**']
+  },
+  recommendedConfig,
+  ...github.getFlatConfigs().typescript,
+  {
+    files: ['**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        project: './tsconfig.json',
+      },
     },
-    "rules": {
+    rules: {
       "i18n-text/no-en": "off",
       "eslint-comments/no-use": "off",
       "import/no-namespace": "off",
@@ -21,7 +31,6 @@
       "camelcase": "off",
       "@typescript-eslint/consistent-type-assertions": "error",
       "@typescript-eslint/explicit-function-return-type": ["error", {"allowExpressions": true}],
-      "@typescript-eslint/func-call-spacing": ["error", "never"],
       "@typescript-eslint/no-array-constructor": "error",
       "@typescript-eslint/no-empty-interface": "error",
       "@typescript-eslint/no-explicit-any": "error",
@@ -43,12 +52,7 @@
       "@typescript-eslint/require-array-sort-compare": "error",
       "@typescript-eslint/restrict-plus-operands": "error",
       "semi": "off",
-      "@typescript-eslint/semi": ["error", "never"],
-      "@typescript-eslint/type-annotation-spacing": "error",
       "@typescript-eslint/unbound-method": "error"
-    },
-    "env": {
-      "node": true,
-      "es6": true
     }
   }
+]

@@ -4,7 +4,7 @@
 > **This action has moved to [`bcgov/actions/pr-description-add`](https://github.com/bcgov/actions/tree/main/pr-description-add).** This repository is retiring and will be archived. Update workflows to the new path, pinned to a [release](https://github.com/bcgov/actions/releases) (not `@main`):
 >
 > ```yaml
-> - uses: bcgov/actions/pr-description-add@091f1da89c669d36bf4899830381e5b12d2c889a # v0.11.0
+> - uses: bcgov/actions/pr-description-add@vX.Y.Z
 >   with:
 >     add_markdown: |
 >       Thanks for the PR!
